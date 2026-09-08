@@ -31,8 +31,15 @@ public class Parser {
 
     private void expr() {
 
-        digit();
+        term();
         oper();
+    }
+
+    private void term() {
+
+        digit();
+
+        termOper();
     }
 
     private void digit() {
@@ -55,7 +62,7 @@ public class Parser {
 
             match('+');
 
-            digit();
+            term();
 
             System.out.println("add");
 
@@ -65,11 +72,35 @@ public class Parser {
 
             match('-');
 
-            digit();
+            term();
 
             System.out.println("sub");
 
             oper();
+        }
+    }
+
+    private void termOper() {
+
+        if (peek() == '*') {
+
+            match('*');
+
+            digit();
+
+            System.out.println("mul");
+
+            termOper();
+
+        } else if (peek() == '/') {
+
+            match('/');
+
+            digit();
+
+            System.out.println("div");
+
+            termOper();
         }
     }
 }
