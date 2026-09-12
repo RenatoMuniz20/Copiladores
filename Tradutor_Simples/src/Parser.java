@@ -1,5 +1,6 @@
 public class Parser {
 
+    private StringBuilder output = new StringBuilder();
     private Scanner scan;
     private Token currentToken;
 
@@ -46,7 +47,7 @@ public class Parser {
 
             term();
 
-            System.out.println("add");
+            emit("add");
 
             oper();
 
@@ -56,7 +57,7 @@ public class Parser {
 
             term();
 
-            System.out.println("sub");
+            emit("sub");
 
             oper();
         }
@@ -76,7 +77,7 @@ public class Parser {
 
             factor();
 
-            System.out.println("mul");
+            emit("mul");
 
             termOper();
 
@@ -86,7 +87,7 @@ public class Parser {
 
             factor();
 
-            System.out.println("div");
+            emit("div");
 
             termOper();
         }
@@ -94,9 +95,7 @@ public class Parser {
 
     private void number() {
 
-        System.out.println(
-            "push " + currentToken.lexeme
-        );
+        emit("push " + currentToken.lexeme);
 
         match(TokenType.NUMBER);
     }
@@ -109,9 +108,7 @@ public class Parser {
 
         } else if (currentToken.type == TokenType.IDENT) {
 
-            System.out.println(
-                "push " + currentToken.lexeme
-            );
+            emit("push " + currentToken.lexeme);
 
             match(TokenType.IDENT);
 
@@ -134,9 +131,7 @@ public class Parser {
 
         expr();
 
-        System.out.println(
-            "pop " + id
-        );
+        emit("pop " + id);
 
         match(TokenType.SEMICOLON);
     }
@@ -147,7 +142,7 @@ public class Parser {
 
         expr();
 
-        System.out.println("print");
+        emit("print");
 
         match(TokenType.SEMICOLON);
     }
@@ -176,4 +171,14 @@ public class Parser {
         }
     }
 
+    private void emit(String command) {
+
+        output.append(command);
+        output.append(System.lineSeparator());
+    }
+
+    public String output() {
+
+        return output.toString();
+    }
 }
