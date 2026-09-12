@@ -5,7 +5,13 @@ public enum TokenType {
     MULT,
     DIV,
 
+    EQ,
+    SEMICOLON,
+
     NUMBER,
+    IDENT,
+    
+    LET,
 
     EOF
 }

@@ -1,5 +1,8 @@
-public class Scanner {
+import java.util.HashMap;
+import java.util.Map;
 
+public class Scanner {
+    
     private byte[] input;
     private int current;
 
@@ -51,6 +54,10 @@ public class Scanner {
 
         char ch = peek();
 
+        if (isAlpha(ch)) {
+            return identifier();
+        }
+
         if (ch == '0') {
 
             advance();
@@ -96,6 +103,24 @@ public class Scanner {
 
                 return new Token(TokenType.EOF, "EOF");
 
+            case '=':
+
+                advance();
+
+                return new Token(
+                    TokenType.EQ,
+                        "="
+                );
+
+            case ';':
+
+                advance();
+
+                return new Token(
+                    TokenType.SEMICOLON,
+                    ";"
+            );
+
             default:
 
                 throw new Error(
@@ -120,4 +145,57 @@ public class Scanner {
             ch = peek();
     }
 }
+
+    private boolean isAlpha(char c) {
+
+        return (c >= 'a' && c <= 'z')
+            || (c >= 'A' && c <= 'Z')
+            || c == '_';
+    }
+
+    private boolean isAlphaNumeric(char c) {
+
+        return isAlpha(c)
+            || Character.isDigit(c);
+    }
+
+
+    private Token identifier() {
+
+        int start = current;
+
+        while (isAlphaNumeric(peek())) {
+            advance();
+        }
+
+        String id = new String(
+            input,
+            start,
+            current - start
+        );
+
+        TokenType type = keywords.get(id);
+
+        if (type == null) {
+            type = TokenType.IDENT;
+        }
+
+        return new Token(
+            type,
+            id
+        );
+    }
+
+
+    private static final Map<String, TokenType> keywords;
+
+    static {
+
+        keywords = new HashMap<>();
+
+        keywords.put(
+            "let",
+            TokenType.LET
+        );
+    }
 }

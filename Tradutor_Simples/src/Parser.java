@@ -29,7 +29,7 @@ public class Parser {
 
     public void parse() {
 
-        expr();
+        letStatement();
     }
 
     private void expr() {
@@ -64,7 +64,7 @@ public class Parser {
 
     private void term() {
 
-        number();
+        factor();
         termOper();
     }
 
@@ -74,7 +74,7 @@ public class Parser {
 
             match(TokenType.MULT);
 
-            number();
+            factor();
 
             System.out.println("mul");
 
@@ -84,7 +84,7 @@ public class Parser {
 
             match(TokenType.DIV);
 
-            number();
+            factor();
 
             System.out.println("div");
 
@@ -100,4 +100,46 @@ public class Parser {
 
         match(TokenType.NUMBER);
     }
+
+    private void factor() {
+
+        if (currentToken.type == TokenType.NUMBER) {
+
+            number();
+
+        } else if (currentToken.type == TokenType.IDENT) {
+
+            System.out.println(
+                "push " + currentToken.lexeme
+            );
+
+            match(TokenType.IDENT);
+
+        } else {
+
+            throw new Error("syntax error");
+        }
+    }
+
+
+    private void letStatement() {
+
+        match(TokenType.LET);
+
+        String id = currentToken.lexeme;
+
+        match(TokenType.IDENT);
+
+        match(TokenType.EQ);
+
+        expr();
+
+        System.out.println(
+            "pop " + id
+        );
+
+        match(TokenType.SEMICOLON);
+    }
+    
+
 }
