@@ -1,7 +1,7 @@
 public class Parser {
 
     private Scanner scan;
-    private char currentToken;
+    private Token currentToken;
 
     public Parser(byte[] input) {
 
@@ -15,9 +15,9 @@ public class Parser {
         currentToken = scan.nextToken();
     }
 
-    private void match(char t) {
+    private void match(TokenType t) {
 
-        if (currentToken == t) {
+        if (currentToken.type == t) {
 
             nextToken();
 
@@ -40,9 +40,9 @@ public class Parser {
 
     private void oper() {
 
-        if (currentToken == '+') {
+        if (currentToken.type == TokenType.PLUS) {
 
-            match('+');
+            match(TokenType.PLUS);
 
             term();
 
@@ -50,9 +50,9 @@ public class Parser {
 
             oper();
 
-        } else if (currentToken == '-') {
+        } else if (currentToken.type == TokenType.MINUS) {
 
-            match('-');
+            match(TokenType.MINUS);
 
             term();
 
@@ -64,27 +64,27 @@ public class Parser {
 
     private void term() {
 
-        digit();
+        number();
         termOper();
     }
 
     private void termOper() {
 
-        if (currentToken == '*') {
+        if (currentToken.type == TokenType.MULT) {
 
-            match('*');
+            match(TokenType.MULT);
 
-            digit();
+            number();
 
             System.out.println("mul");
 
             termOper();
 
-        } else if (currentToken == '/') {
+        } else if (currentToken.type == TokenType.DIV) {
 
-            match('/');
+            match(TokenType.DIV);
 
-            digit();
+            number();
 
             System.out.println("div");
 
@@ -92,17 +92,12 @@ public class Parser {
         }
     }
 
-    private void digit() {
+    private void number() {
 
-        if (Character.isDigit(currentToken)) {
+        System.out.println(
+            "push " + currentToken.lexeme
+        );
 
-            System.out.println("push " + currentToken);
-
-            match(currentToken);
-
-        } else {
-
-            throw new Error("syntax error");
-        }
+        match(TokenType.NUMBER);
     }
 }

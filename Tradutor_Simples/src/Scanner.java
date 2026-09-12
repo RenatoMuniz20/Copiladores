@@ -13,8 +13,8 @@ public class Scanner {
             return (char) input[current];
         }
 
-    return '\0';
-}
+        return '\0';
+    }
 
     private void advance() {
 
@@ -25,32 +25,99 @@ public class Scanner {
         }
     }
 
-    public char nextToken() {
+    private Token number() {
+
+        int start = current;
+
+        while (Character.isDigit(peek())) {
+            advance();
+        }
+
+        String n = new String(
+            input,
+            start,
+            current - start
+        );
+
+        return new Token(
+            TokenType.NUMBER,
+            n
+        );
+    }
+
+    public Token nextToken() {
+
+        skipWhitespace();
 
         char ch = peek();
 
-        if (Character.isDigit(ch)) {
-        advance();
-        return ch;
+        if (ch == '0') {
+
+            advance();
+
+            return new Token(
+                TokenType.NUMBER,
+                Character.toString(ch)
+            );
+        }
+
+        else if (Character.isDigit(ch)) {
+
+            return number();
         }
 
         switch (ch) {
 
             case '+':
-            case '-':
-            case '*':
-            case '/':
+
                 advance();
-                return ch;
+
+                return new Token(TokenType.PLUS, "+");
+
+            case '-':
+
+                advance();
+
+                return new Token(TokenType.MINUS, "-");
+
+            case '*':
+
+                advance();
+
+                return new Token(TokenType.MULT, "*");
+
+            case '/':
+
+                advance();
+
+                return new Token(TokenType.DIV, "/");
+
+            case '\0':
+
+                return new Token(TokenType.EOF, "EOF");
 
             default:
-                break;
+
+                throw new Error(
+                    "lexical error at " + ch
+                );
         }
+    }
 
-        return '\0';
+    private void skipWhitespace() {
+
+        char ch = peek();
+
+        while (
+            ch == ' ' ||
+            ch == '\r' ||
+            ch == '\t' ||
+            ch == '\n'
+        ) {
+
+            advance();
+
+            ch = peek();
+    }
 }
-
-
-
-
 }
