@@ -29,7 +29,7 @@ public class Parser {
 
     public void parse() {
 
-        letStatement();
+        statements();
     }
 
     private void expr() {
@@ -141,5 +141,39 @@ public class Parser {
         match(TokenType.SEMICOLON);
     }
     
+    private void printStatement() {
+
+        match(TokenType.PRINT);
+
+        expr();
+
+        System.out.println("print");
+
+        match(TokenType.SEMICOLON);
+    }
+
+    private void statement() {
+
+        if (currentToken.type == TokenType.PRINT) {
+
+            printStatement();
+
+        } else if (currentToken.type == TokenType.LET) {
+
+            letStatement();
+
+        } else {
+
+            throw new Error("syntax error");
+        }
+    }
+
+    private void statements() {
+
+        while (currentToken.type != TokenType.EOF) {
+
+            statement();
+        }
+    }
 
 }

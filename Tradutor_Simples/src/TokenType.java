@@ -11,6 +11,7 @@ public enum TokenType {
     NUMBER,
     IDENT,
     
+    PRINT,
     LET,
 
     EOF
