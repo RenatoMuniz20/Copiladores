@@ -1,32 +1,35 @@
 public class Parser {
 
-    private byte[] input;
-    private int current;
+    private Scanner scan;
+    private char currentToken;
 
     public Parser(byte[] input) {
-        this.input = input;
+
+        scan = new Scanner(input);
+
+        currentToken = scan.nextToken();
+    }
+
+    private void nextToken() {
+
+        currentToken = scan.nextToken();
+    }
+
+    private void match(char t) {
+
+        if (currentToken == t) {
+
+            nextToken();
+
+        } else {
+
+            throw new Error("syntax error");
+        }
     }
 
     public void parse() {
+
         expr();
-    }
-
-    private char peek() {
-
-        if (current < input.length) {
-            return (char) input[current];
-        }
-
-        return '\0';
-    }
-
-    private void match(char c) {
-
-        if (c == peek()) {
-            current++;
-        } else {
-            throw new Error("syntax error");
-        }
     }
 
     private void expr() {
@@ -35,30 +38,9 @@ public class Parser {
         oper();
     }
 
-    private void term() {
-
-        digit();
-
-        termOper();
-    }
-
-    private void digit() {
-
-        if (Character.isDigit(peek())) {
-
-            System.out.println("push " + peek());
-
-            match(peek());
-
-        } else {
-
-            throw new Error("syntax error");
-        }
-    }
-
     private void oper() {
 
-        if (peek() == '+') {
+        if (currentToken == '+') {
 
             match('+');
 
@@ -68,7 +50,7 @@ public class Parser {
 
             oper();
 
-        } else if (peek() == '-') {
+        } else if (currentToken == '-') {
 
             match('-');
 
@@ -80,9 +62,15 @@ public class Parser {
         }
     }
 
+    private void term() {
+
+        digit();
+        termOper();
+    }
+
     private void termOper() {
 
-        if (peek() == '*') {
+        if (currentToken == '*') {
 
             match('*');
 
@@ -92,7 +80,7 @@ public class Parser {
 
             termOper();
 
-        } else if (peek() == '/') {
+        } else if (currentToken == '/') {
 
             match('/');
 
@@ -101,6 +89,20 @@ public class Parser {
             System.out.println("div");
 
             termOper();
+        }
+    }
+
+    private void digit() {
+
+        if (Character.isDigit(currentToken)) {
+
+            System.out.println("push " + currentToken);
+
+            match(currentToken);
+
+        } else {
+
+            throw new Error("syntax error");
         }
     }
 }
